@@ -156,16 +156,22 @@ class half_adder
             Signal("o_sum", SignalType::output, SignalImpl::wire, {{TriState::X}}),
             Signal("o_carry", SignalType::output, SignalImpl::wire, {{TriState::X}})
         };
-        void eval() {
+
+        void eval_sequential() {
+        }
+
+        void eval_concurrent() {
             bool outputdiff = true;
             size_t count_eval = 0;
             SignalValue outputs[4];
 
-            // Concurrent code below:
             // While the output is different from the one before the eval call we run all concurrent operations
             do {
+                // Concurrent code below:
                 signals[2].value = sig_xor(signals[0].value, signals[1].value);
                 signals[3].value = sig_and(signals[0].value, signals[1].value);
+                // End of concurrent code
+
                 if (count_eval > 0) {
                     outputdiff = false;
                     for (size_t i = 0; i<4; i++) {
@@ -187,6 +193,10 @@ class half_adder
 
             } while (outputdiff);
             std::cout<<"Concurrent code tool "<<count_eval<<" evaluations to complete"<<std::endl;
+        }
+        void eval() {
+            eval_concurrent();
+            eval_sequential();
         }
         Signal* getSignal(const std::string& sigName) {
             for (size_t i = 0; i < 4; i++) {
