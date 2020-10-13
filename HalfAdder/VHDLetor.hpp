@@ -4,6 +4,8 @@
 #include <ostream>
 #include <vector>
 
+namespace hdl {
+
 typedef enum TriState
 {
     L = 0, // Binary 0
@@ -223,3 +225,5 @@ class VHDLComponent
             }
         }
 };
+
+}

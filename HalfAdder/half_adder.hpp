@@ -11,17 +11,17 @@
 
 #include "VHDLetor.hpp"
 
-class half_adder : public VHDLComponent
+class half_adder : public hdl::VHDLComponent
 {
     public:
-        Signal signals[4] = {
-            Signal("i_a", SignalType::input, SignalImpl::wire, {{TriState::X}}),
-            Signal("i_b", SignalType::input, SignalImpl::wire, {{TriState::X}}),
-            Signal("o_sum", SignalType::output, SignalImpl::wire, {{TriState::X}}),
-            Signal("o_carry", SignalType::output, SignalImpl::wire, {{TriState::X}})
+        hdl::Signal signals[4] = {
+            hdl::Signal("i_a", hdl::SignalType::input, hdl::SignalImpl::wire, {{hdl::TriState::X}}),
+            hdl::Signal("i_b", hdl::SignalType::input, hdl::SignalImpl::wire, {{hdl::TriState::X}}),
+            hdl::Signal("o_sum", hdl::SignalType::output, hdl::SignalImpl::wire, {{hdl::TriState::X}}),
+            hdl::Signal("o_carry", hdl::SignalType::output, hdl::SignalImpl::wire, {{hdl::TriState::X}})
         };
 
-        Signal* getSignals() {
+        hdl::Signal* getSignals() {
             return signals;
         }
         size_t getSignalsCount() {
@@ -32,8 +32,8 @@ class half_adder : public VHDLComponent
         }
         void eval_concurrent()  {
             // Concurrent code below:
-            signals[2].value = sig_xor(signals[0].value, signals[1].value);
-            signals[3].value = sig_and(signals[0].value, signals[1].value);
+            signals[2].value = hdl::sig_xor(signals[0].value, signals[1].value);
+            signals[3].value = hdl::sig_and(signals[0].value, signals[1].value);
             // End of concurrent code
         }
 };
