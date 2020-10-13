@@ -157,10 +157,36 @@ class half_adder
             Signal("o_carry", SignalType::output, SignalImpl::wire, {{TriState::X}})
         };
         void eval() {
-            // Assignements are ordered as they are in the VHDL code
-            // TODO: Critical: If w_b <= wa and then w_a <= 1 then w_b should be 1
-            signals[2].value = sig_xor(signals[0].value, signals[1].value);
-            signals[3].value = sig_and(signals[0].value, signals[1].value);
+            bool outputdiff = true;
+            size_t count_eval = 0;
+            SignalValue outputs[4];
+
+            // Concurrent code below:
+            // While the output is different from the one before the eval call we run all concurrent operations
+            do {
+                signals[2].value = sig_xor(signals[0].value, signals[1].value);
+                signals[3].value = sig_and(signals[0].value, signals[1].value);
+                if (count_eval > 0) {
+                    outputdiff = false;
+                    for (size_t i = 0; i<4; i++) {
+                        if (signals[i].value != outputs[i]){
+                            outputdiff = true;
+                            break;
+                        }
+                    }
+                }
+                for (size_t i = 0; i<4; i++) {
+                    outputs[i] = signals[i].value;
+                }
+                count_eval += 1;
+
+                if (count_eval > 100) {
+                    std::cout<<"Error: half_adder::eval(): You have a loop in your concurrent code"<<std::endl;
+                    return;
+                }
+
+            } while (outputdiff);
+            std::cout<<"Concurrent code tool "<<count_eval<<" evaluations to complete"<<std::endl;
         }
         Signal* getSignal(const std::string& sigName) {
             for (size_t i = 0; i < 4; i++) {
