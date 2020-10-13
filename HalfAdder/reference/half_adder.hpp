@@ -9,7 +9,7 @@
 #include <ostream>
 #include <vector>
 
-#include "../include/VHDLetor.hpp"
+#include "../../include/VHDLetor.hpp"
 
 class half_adder : public hdl::VHDLComponent
 {
