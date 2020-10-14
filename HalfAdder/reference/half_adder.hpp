@@ -20,6 +20,7 @@ class half_adder : public hdl::VHDLComponent
             hdl::Signal("o_sum", hdl::SignalType::output, hdl::SignalImpl::wire, {{hdl::TriState::X}}),
             hdl::Signal("o_carry", hdl::SignalType::output, hdl::SignalImpl::wire, {{hdl::TriState::X}})
         };
+        hdl::SignalValue savedSignals[4];
 
         half_adder() {
             hdl::SimMaster::getInstance()->registerInstance("half_adder", this);
@@ -27,6 +28,9 @@ class half_adder : public hdl::VHDLComponent
 
         hdl::Signal* getSignals() {
             return signals;
+        }
+        hdl::SignalValue* getSavedSignals() {
+            return savedSignals;
         }
         size_t getSignalsCount() {
             return 4;

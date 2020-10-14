@@ -149,40 +149,26 @@ class VHDLComponent
 {
     public:
         virtual Signal* getSignals() = 0;
+        virtual SignalValue* getSavedSignals() = 0;
         virtual size_t getSignalsCount() = 0;
+        // Is called by SimMaster, do not call directly
         virtual void eval_concurrent() = 0;
+        // Is called by SimMaster, do not call directly
         virtual void eval_sequential() = 0;
-        void eval() {
-            bool outputdiff = true;
-            size_t count_eval = 0;
-            SignalValue outputs[getSignalsCount()];
 
-            // While the output is different from the one before the eval call we run all concurrent operations
-            do {
-                eval_concurrent();
+        void saveSignals() {
+            for (size_t i = 0; i<getSignalsCount(); i++) {
+                getSavedSignals()[i] = getSignals()[i].value;
+            }
+        }
 
-                if (count_eval > 0) {
-                    outputdiff = false;
-                    for (size_t i = 0; i<getSignalsCount(); i++) {
-                        if (getSignals()[i].value != outputs[i]){
-                            outputdiff = true;
-                            break;
-                        }
-                    }
+        bool isAnySignalsChanged() {
+            for (size_t i = 0; i<getSignalsCount(); i++) {
+                if (getSignals()[i].value != getSavedSignals()[i]){
+                    return true;
                 }
-                for (size_t i = 0; i<getSignalsCount(); i++) {
-                    outputs[i] = getSignals()[i].value;
-                }
-                count_eval += 1;
-
-                if (count_eval > 100) {
-                    std::cout<<"Error: half_adder::eval(): You have a loop in your concurrent code"<<std::endl;
-                    return;
-                }
-
-            } while (outputdiff);
-            std::cout<<"Concurrent code tool "<<count_eval<<" evaluations to complete"<<std::endl;
-            eval_sequential();
+            }
+            return false;
         }
         Signal* getSignal(const std::string& sigName) {
             for (size_t i = 0; i < getSignalsCount(); i++) {
@@ -244,6 +230,38 @@ class SimMaster
             }
             HDLInstances[name] = ptr;
             std::cout<<"Instance "<<name<<" registered in SimMaster"<<std::endl;
+        }
+
+        void eval() {
+            size_t count_eval = 0;
+            const size_t max_eval = 100;
+
+            while (count_eval < max_eval) {
+                count_eval ++;
+
+                for (std::map<std::string, VHDLComponent*>::iterator it = HDLInstances.begin(); it != HDLInstances.end(); it++) {
+                    it->second->saveSignals();
+                }
+                
+                for (std::map<std::string, VHDLComponent*>::iterator it = HDLInstances.begin(); it != HDLInstances.end(); it++) {
+                    it->second->eval_concurrent();
+                }
+
+                bool outputdiff = false;
+                for (std::map<std::string, VHDLComponent*>::iterator it = HDLInstances.begin(); it != HDLInstances.end(); it++) {
+                    if (it->second->isAnySignalsChanged()) {
+                        outputdiff = true;
+                        std::cout<<"SimMaster::eval: Instance "<<it->first<<" require a new evaluation iteration"<<std::endl;
+                        break;
+                    }
+                }
+                if (!outputdiff)
+                    break;
+            }
+            std::cout<<"Concurrent code took "<<count_eval<<" evaluations to complete"<<std::endl;
+            for (std::map<std::string, VHDLComponent*>::iterator it = HDLInstances.begin(); it != HDLInstances.end(); it++) {
+                it->second->eval_sequential();
+            }
         }
 
     private:
