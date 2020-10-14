@@ -2,7 +2,7 @@
 #include "reference/half_adder.hpp"
 
 int main(int argc, char** argv) {
-    half_adder uut;
+    half_adder uut(0);
     uut.setSignalAsUInt("i_a", 0);
     uut.setSignalAsUInt("i_b", 0);
     uut.setSignalAsUInt("o_sum", 0);

@@ -22,8 +22,10 @@ class half_adder : public hdl::VHDLComponent
         };
         hdl::SignalValue savedSignals[4];
 
-        half_adder() {
-            hdl::SimMaster::getInstance()->registerInstance("half_adder", this);
+        half_adder(size_t instance_num) {
+            std::string name = "half_adder_";
+            name.append(std::to_string(instance_num));
+            hdl::SimMaster::getInstance()->registerInstance(name, this);
         }
 
         hdl::Signal* getSignals() {
