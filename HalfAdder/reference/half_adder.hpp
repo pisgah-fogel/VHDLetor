@@ -21,6 +21,10 @@ class half_adder : public hdl::VHDLComponent
             hdl::Signal("o_carry", hdl::SignalType::output, hdl::SignalImpl::wire, {{hdl::TriState::X}})
         };
 
+        half_adder() {
+            hdl::SimMaster::getInstance()->registerInstance("half_adder", this);
+        }
+
         hdl::Signal* getSignals() {
             return signals;
         }

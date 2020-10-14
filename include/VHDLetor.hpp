@@ -3,6 +3,7 @@
 #include <iostream>
 #include <ostream>
 #include <vector>
+#include <map>
 
 namespace hdl {
 
@@ -223,6 +224,31 @@ class VHDLComponent
             else {
                 std::cout<<"half_adder::setSignalAsUInt(): Error: Cannot find signal: "<<sigName<<std::endl;
             }
+        }
+};
+
+class SimMaster
+{
+    public:
+        std::map<std::string, VHDLComponent*> HDLInstances;
+
+        static SimMaster* getInstance() {
+            static SimMaster instance;
+            return &instance;
+        }
+
+        void registerInstance(const std::string &name, VHDLComponent* ptr) {
+            if (HDLInstances.find(name) != HDLInstances.end()) {
+                std::cout<<"SimMaster::registerInstance: Error: Instance: "<<name<<" already exist"<<std::endl;
+                return;
+            }
+            HDLInstances[name] = ptr;
+            std::cout<<"Instance "<<name<<" registered in SimMaster"<<std::endl;
+        }
+
+    private:
+        SimMaster() {
+            std::cout<<"SimMaster created"<<std::endl;
         }
 };
 
