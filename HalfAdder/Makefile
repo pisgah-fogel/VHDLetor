@@ -7,7 +7,7 @@ cpp:
 
 generate:
 	mkdir -p generated 
-	python3 generate.py half_adder.vhd
+	python3 ../generate.py half_adder.vhd
 	g++ -Wall -g main.cpp -o test
 
 clean:

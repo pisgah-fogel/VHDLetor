@@ -3,9 +3,10 @@ import sys
 from shutil import copyfile
 import os
 
+WorkingDirectory = "./"
 VHDLetorDirectory = "../"
 ExampleHppFile = "example.hpp"
-OutputDirectory = "./generated/"
+OutputDirectory = WorkingDirectory+"generated/"
 
 def parse_file(filename):
     base=os.path.basename(filename)
