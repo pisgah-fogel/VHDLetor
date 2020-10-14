@@ -1,6 +1,7 @@
 ghdl:
-	ghdl -c *.vhd
-	ghdl -r full_adder_tb --vcd=output.vcd
+	ghdl -a *.vhd
+	ghdl -e ripple_carry_adder_tb
+	ghdl -r ripple_carry_adder_tb --vcd=output.vcd
 
 cpp:
 	g++ -Wall -g main.cpp -o test
