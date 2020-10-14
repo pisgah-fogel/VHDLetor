@@ -6,7 +6,7 @@ entity ripple_carry_adder_tb is
 end ripple_carry_adder_tb;
 
 architecture behave of ripple_carry_adder_tb is
-    constant c_WIDTH : integer := 2;
+    constant c_WIDTH : integer := 4;
 
     signal r_ADD_1  : std_logic_vector(c_WIDTH-1 downto 0) := (others => '0');
     signal r_ADD_2  : std_logic_vector(c_WIDTH-1 downto 0) := (others => '0');
@@ -37,17 +37,17 @@ begin
    
   process is
   begin
-    r_ADD_1 <= "00";
-    r_ADD_2 <= "01";
+    r_ADD_1 <= "0000";
+    r_ADD_2 <= "0100";
     wait for 10 ns;
-    r_ADD_1 <= "10";
-    r_ADD_2 <= "01";
+    r_ADD_1 <= "1000";
+    r_ADD_2 <= "0100";
     wait for 10 ns;
-    r_ADD_1 <= "01";
-    r_ADD_2 <= "11";
+    r_ADD_1 <= "0100";
+    r_ADD_2 <= "1100";
     wait for 10 ns;
-    r_ADD_1 <= "11";
-    r_ADD_2 <= "11";
+    r_ADD_1 <= "1100";
+    r_ADD_2 <= "1100";
     wait for 10 ns;
     wait for 10 ns;
     assert FALSE Report "Simulation Done" severity FAILURE;
