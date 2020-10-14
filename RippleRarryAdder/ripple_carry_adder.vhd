@@ -3,10 +3,13 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
  
 entity ripple_carry_adder is
+    generic (
+    g_WIDTH : natural := 2
+    );
     port (
-        i_add_term1  : in std_logic_vector(1 downto 0);
-        i_add_term2  : in std_logic_vector(1 downto 0);
-        o_result   : out std_logic_vector(2 downto 0)
+        i_add_term1  : in std_logic_vector(g_WIDTH-1 downto 0);
+        i_add_term2  : in std_logic_vector(g_WIDTH-1 downto 0);
+        o_result   : out std_logic_vector(g_WIDTH downto 0)
     );
 end ripple_carry_adder;
  
@@ -21,28 +24,21 @@ architecture rtl of ripple_carry_adder is
         );
     end component full_adder;
 
-    signal w_carry : std_logic_vector(2 downto 0);
-    signal w_sum   : std_logic_vector(1 downto 0);
+    signal w_carry : std_logic_vector(g_WIDTH downto 0);
+    signal w_sum   : std_logic_vector(g_WIDTH-1 downto 0);
 begin
     w_carry(0) <= '0';
 
-    FULL_ADDER_1_INST : full_adder
-        port map (
-            i_a  => i_add_term1(0),
-            i_b  => i_add_term2(0),
-            i_carry => w_carry(0),
-            o_sum   => w_sum(0),
-            o_carry => w_carry(1)
+    SET_WIDTH : for ii in 0 to g_WIDTH-1 generate
+    i_FULL_ADDER_INST : full_adder
+      port map (
+        i_a  => i_add_term1(ii),
+        i_b  => i_add_term2(ii),
+        i_carry => w_carry(ii),
+        o_sum   => w_sum(ii),
+        o_carry => w_carry(ii+1)
         );
-
-    FULL_ADDER_2_INST : full_adder
-        port map (
-            i_a  => i_add_term1(1),
-            i_b  => i_add_term2(1),
-            i_carry => w_carry(1),
-            o_sum   => w_sum(1),
-            o_carry => w_carry(2)
-        );
-
-    o_result <= w_carry(2) & w_sum;
+  end generate SET_WIDTH;
+ 
+  o_result <= w_carry(g_WIDTH) & w_sum;
 end rtl;
