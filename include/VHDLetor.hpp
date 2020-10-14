@@ -64,10 +64,37 @@ class Signal
             name(sigName), signalType(sigType), signalImpl(sigImpl), value(sigValue)
         {
         }
-    friend std::ostream& operator<<(std::ostream& os, const Signal& dt) {
-        os << dt.name << ": " << dt.value;
-        return os;
-    }
+        SignalValue getBits(size_t start, size_t end)
+        {
+            SignalValue output;
+            if (start > end || end > value.size()) {
+                std::cout<<"Signal::getBits: Error: Invalid range "<<start<<" to "<<end<<std::endl;
+                return value;
+            }
+            for (size_t i = start; i < end; i++)
+                output.push_back(value[i]); // TODO: Do not use [] operator
+            std::cout<<"Debug: getBits "<<start<<" to "<<end<<" from "<<value<<" => "<<output<<std::endl;
+            return output;
+        }
+        friend std::ostream& operator<<(std::ostream& os, const Signal& dt) {
+            os << dt.name << ": " << dt.value;
+            return os;
+        }
+        void setAsUInt(unsigned int sigValue) {
+            if (value.size() > sizeof(sigValue)*8) {
+                std::cout<<"half_adder::setSignalAsUInt(): Error: Signal "<<name<<" is "<<value.size()<<" bits wide and on your system 'setSignalAsUInt' only support "<<sizeof(sigValue)*8<<" bits"<<std::endl;
+                std::cout<<"Abording the operation on this signal"<<std::endl;
+                return;
+            }
+            value.clear();
+            for (int z = value.size()-1; z>=0; z--) {
+                if (sigValue & (0b1<<z))
+                    value.push_back(TriState::H);
+                else
+                    value.push_back(TriState::L);
+            }
+            std::cout<<"Debug: setSignalAsUInt: Uint "<<sigValue<<" result in "<<value<<" (size="<<value.size()<<")"<<std::endl;
+        }
 };
 
 SignalValue sig_xor(SignalValue a, SignalValue b)
@@ -145,6 +172,14 @@ SignalValue sig_or(SignalValue a, SignalValue b)
     return output;
 }
 
+SignalValue sig_concatenate(SignalValue a, SignalValue b)
+{
+    SignalValue output = a;
+    output.insert(output.end(), b.begin(), b.end());
+    std::cout<<"Concatenate "<<a<<" & "<<b<<" = "<<output<<std::endl;
+    return output;
+}
+
 class VHDLComponent
 {
     public:
@@ -155,6 +190,8 @@ class VHDLComponent
         virtual void eval_concurrent() = 0;
         // Is called by SimMaster, do not call directly
         virtual void eval_sequential() = 0;
+
+        virtual ~VHDLComponent() {}
 
         void saveSignals() {
             for (size_t i = 0; i<getSignalsCount(); i++) {
@@ -190,22 +227,7 @@ class VHDLComponent
         void setSignalAsUInt(const std::string& sigName, unsigned int sigValue) {
             Signal* ptr = getSignal(sigName);
             if (ptr != nullptr) {
-                size_t sigSize = ptr->value.size();
-                if (sigSize > sizeof(sigValue)*8) {
-                    std::cout<<"half_adder::setSignalAsUInt(): Error: Signal "<<sigName<<" is "<<sigSize<<" bits wide and on your system 'setSignalAsUInt' only support "<<sizeof(sigValue)*8<<" bits"<<std::endl;
-                    std::cout<<"Abording the operation on this signal"<<std::endl;
-                    return;
-                }
-
-                SignalValue tmp;
-                for (int z = sigSize-1; z>=0; z--) {
-                    if (sigValue & (0b1<<z))
-                        tmp.push_back(TriState::H);
-                    else
-                        tmp.push_back(TriState::L);
-                }
-                ptr->value = tmp;
-                std::cout<<"Debug: setSignalAsUInt: Uint "<<sigValue<<" result in "<<*ptr<<" (size="<<sigSize<<")"<<std::endl;
+                ptr->setAsUInt(sigValue);
             }
             else {
                 std::cout<<"half_adder::setSignalAsUInt(): Error: Cannot find signal: "<<sigName<<std::endl;

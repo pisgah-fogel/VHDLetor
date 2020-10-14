@@ -8,7 +8,7 @@ cpp:
 
 generate:
 	mkdir -p generated 
-	python3 ../generate.py full_adder.vhd
+	python3 ../generate.py ripple_carry_adder.vhd full_adder.vhd
 	g++ -Wall -g main.cpp -o test
 
 clean:
