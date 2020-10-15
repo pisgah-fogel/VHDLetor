@@ -96,6 +96,27 @@ class Signal
             }
             std::cout<<"Debug: setSignalAsUInt: Uint "<<sigValue<<" result in "<<value<<" (size="<<value.size()<<")"<<std::endl;
         }
+        unsigned int toUInt() {
+            if (value.size() > sizeof(unsigned int)*8) {
+                std::cout<<"half_adder::toUInt(): Error: Signal "<<name<<" is "<<value.size()<<" bits wide and on your system 'toUInt' only support "<<sizeof(unsigned int)*8<<" bits"<<std::endl;
+                return 0;
+            }
+            unsigned int sum = 0;
+            size_t i = 0;
+            for (const TriState &val : value) {
+                switch (val) {
+                    case TriState::H:
+                        sum += 0b1 << i;
+                        break;
+                    case TriState::L:
+                        break;
+                    default:
+                        std::cout<<"half_adder::toUInt(): Error: Signal "<<name<<", value: "<<value<<" cannot be converted to integer"<<std::endl;
+                }
+                i++;
+            }
+            return sum;
+        }
 };
 
 SignalValue sig_xor(SignalValue a, SignalValue b)
@@ -180,7 +201,9 @@ SignalValue sig_concatenate(SignalValue a, SignalValue b)
 {
     SignalValue output = a;
     output.insert(output.end(), b.begin(), b.end());
+#ifdef DEBUG
     std::cout<<"Concatenate "<<a<<" & "<<b<<" = "<<output<<std::endl;
+#endif
     return output;
 }
 
@@ -277,7 +300,9 @@ class SimMaster
                 for (std::map<std::string, VHDLComponent*>::iterator it = HDLInstances.begin(); it != HDLInstances.end(); it++) {
                     if (it->second->isAnySignalsChanged()) {
                         outputdiff = true;
+#ifdef DEBUG
                         std::cout<<"SimMaster::eval: Instance "<<it->first<<" require a new evaluation iteration"<<std::endl;
+#endif
                         break;
                     }
                 }
