@@ -71,14 +71,14 @@ class ripple_carry_adder : public hdl::VHDLComponent
             signals[w_carry].value[0] = hdl::TriState::L;
 
             for (size_t ii = 0; ii<COMPONENTS_NUMBER; ii++) {
-                childs[ii]->setSignal("i_a",signals[i_add_term1].getBits(ii, ii+1));
-                childs[ii]->setSignal("i_b",signals[i_add_term2].getBits(ii, ii+1));
-                childs[ii]->setSignal("i_carry",signals[w_carry].getBits(ii, ii+1));
+                childs[ii]->setSignal("i_a",signals[i_add_term1].getBitsMSB(ii, ii+1));
+                childs[ii]->setSignal("i_b",signals[i_add_term2].getBitsMSB(ii, ii+1));
+                childs[ii]->setSignal("i_carry",signals[w_carry].getBitsMSB(ii, ii+1));
                 signals[w_sum].value[ii] = childs[ii]->getSignal("o_sum")->value[0]; // Can also use .getBits(0, 1)
                 signals[w_carry].value[ii+1] = childs[ii]->getSignal("o_carry")->value[0];
             }
 
-            signals[o_result].value = hdl::sig_concatenate(signals[w_carry].getBits(4, 5), signals[w_sum].value);
+            signals[o_result].value = hdl::sig_concatenate(signals[w_carry].getBitsMSB(4, 5), signals[w_sum].value);
             // End of concurrent code
         }
 };
