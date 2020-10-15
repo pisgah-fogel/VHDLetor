@@ -75,10 +75,9 @@ class Signal
             }
 
             for (size_t i = value.size()-start; i-- > value.size()-end; ) {
-                output.push_back(value[i]);
+                output.push_front(value[i]);
             }
 
-            std::cout<<"getBit "<<start<<":"<<end<<" of "<<value<<" = "<<output<<std::endl;
             return output;
         }
         friend std::ostream& operator<<(std::ostream& os, const Signal& dt) {
