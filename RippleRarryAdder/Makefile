@@ -11,6 +11,9 @@ generate:
 	python3 ../generate.py ripple_carry_adder.vhd full_adder.vhd
 	g++ -Wall -g main.cpp -o test
 
+test:
+	g++ -Wall -g ../unittest.cpp -o test
+
 clean:
 	rm -f work-*.cf output.vcd
 	rm -f test

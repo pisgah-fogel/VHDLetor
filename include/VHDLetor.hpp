@@ -4,6 +4,7 @@
 #include <ostream>
 #include <vector>
 #include <map>
+#include <deque>
 
 namespace hdl {
 
@@ -15,7 +16,7 @@ typedef enum TriState
     X // Error
 } TriState;
 
-typedef std::vector<TriState> SignalValue;
+typedef std::deque<TriState> SignalValue;
 
 std::ostream& operator<<(std::ostream& os, const SignalValue& dt) {
     for (const TriState &v : dt) {
@@ -72,8 +73,10 @@ class Signal
                 std::cout<<"Signal::getBits: Error: Invalid range "<<start<<" to "<<end<<" for signal "<<name<<" (size="<<value.size()<<")"<<std::endl;
                 return value;
             }
+            
             for (size_t i = start; i < end; i++)
-                output.push_back(value[i]); // TODO: Do not use [] operator
+                output.push_back(value[i]);// TODO: Do not use [] operator
+            std::cout<<"getBit "<<start<<":"<<end<<" of "<<value<<" = "<<output<<std::endl;
             return output;
         }
         friend std::ostream& operator<<(std::ostream& os, const Signal& dt) {
@@ -115,6 +118,7 @@ class Signal
                 }
                 i++;
             }
+            std::cout<<"Debug: toUInt: "<<value<<" = "<<sum<<std::endl;
             return sum;
         }
 };
