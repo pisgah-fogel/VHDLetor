@@ -39,11 +39,12 @@ class ripple_carry_adder : public hdl::VHDLComponent
         ripple_carry_adder(size_t instance_num) {
             std::string name = "ripple_carry_adder_";
             name.append(std::to_string(instance_num));
-            hdl::SimMaster::getInstance()->registerInstance(name, this);
-
+            
             for (size_t ii = 0; ii<COMPONENTS_NUMBER; ii++) {
                 childs[ii] = new full_adder(ii);
             }
+
+            hdl::SimMaster::getInstance()->registerInstance(name, this);
         }
 
         ~ripple_carry_adder() {

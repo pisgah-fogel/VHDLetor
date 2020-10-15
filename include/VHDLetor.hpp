@@ -63,17 +63,17 @@ class Signal
         Signal(const std::string& sigName, SignalType sigType, SignalImpl sigImpl, SignalValue sigValue):
             name(sigName), signalType(sigType), signalImpl(sigImpl), value(sigValue)
         {
+            std::cout<<"Signal "<<name<<" created: "<<value.size()<<"bits = "<<value<<std::endl;
         }
         SignalValue getBits(size_t start, size_t end)
         {
             SignalValue output;
             if (start > end || end > value.size()) {
-                std::cout<<"Signal::getBits: Error: Invalid range "<<start<<" to "<<end<<std::endl;
+                std::cout<<"Signal::getBits: Error: Invalid range "<<start<<" to "<<end<<" for signal "<<name<<" (size="<<value.size()<<")"<<std::endl;
                 return value;
             }
             for (size_t i = start; i < end; i++)
                 output.push_back(value[i]); // TODO: Do not use [] operator
-            std::cout<<"Debug: getBits "<<start<<" to "<<end<<" from "<<value<<" => "<<output<<std::endl;
             return output;
         }
         friend std::ostream& operator<<(std::ostream& os, const Signal& dt) {
@@ -86,8 +86,9 @@ class Signal
                 std::cout<<"Abording the operation on this signal"<<std::endl;
                 return;
             }
+            size_t s = value.size();
             value.clear();
-            for (int z = value.size()-1; z>=0; z--) {
+            for (int z = s-1; z>=0; z--) {
                 if (sigValue & (0b1<<z))
                     value.push_back(TriState::H);
                 else
@@ -102,6 +103,7 @@ SignalValue sig_xor(SignalValue a, SignalValue b)
     SignalValue output;
     if (a.size() != b.size()) {
         std::cout<<"xor: Error: Signals do not have the same width"<<std::endl;
+        std::cout<<a<<" xor "<<b<<std::endl;
         return output;
     }
     SignalValue::iterator ita = a.begin();
@@ -127,6 +129,7 @@ SignalValue sig_and(SignalValue a, SignalValue b)
     SignalValue output;
     if (a.size() != b.size()) {
         std::cout<<"and: Error: Signals do not have the same width"<<std::endl;
+        std::cout<<a<<" and "<<b<<std::endl;
         return output;
     }
     SignalValue::iterator ita = a.begin();
@@ -152,6 +155,7 @@ SignalValue sig_or(SignalValue a, SignalValue b)
     SignalValue output;
     if (a.size() != b.size()) {
         std::cout<<"or: Error: Signals do not have the same width"<<std::endl;
+        std::cout<<a<<" or "<<b<<std::endl;
         return output;
     }
     SignalValue::iterator ita = a.begin();
