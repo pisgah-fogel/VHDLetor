@@ -51,3 +51,40 @@ BOOST_AUTO_TEST_CASE( tc_sig_getBitsLSB_long_msb_2 )
 }
 
 BOOST_AUTO_TEST_SUITE_END()
+
+BOOST_AUTO_TEST_SUITE( ts_vhdletor_signal_getBitsMSB )
+
+BOOST_AUTO_TEST_CASE( tc_sig_getBitsMSB_lsb )
+{
+  hdl::Signal sig = hdl::Signal("test_signal", hdl::SignalType::local, hdl::SignalImpl::wire, hdl::SignalValue(4, hdl::TriState::X));
+  sig.setAsUInt(0b0111);
+  BOOST_TEST_REQUIRE( sig.getBitsMSB(0, 1) == hdl::SignalValue(1, hdl::TriState::L) );
+}
+BOOST_AUTO_TEST_CASE( tc_sig_getBitsMSB_msb )
+{
+  hdl::Signal sig = hdl::Signal("test_signal", hdl::SignalType::local, hdl::SignalImpl::wire, hdl::SignalValue(4, hdl::TriState::X));
+  sig.setAsUInt(0b0001);
+  BOOST_TEST_REQUIRE( sig.getBitsMSB(3, 4) == hdl::SignalValue(1, hdl::TriState::H) );
+}
+
+BOOST_AUTO_TEST_CASE( tc_sig_getBitsMSB_long_lsb )
+{
+  hdl::Signal sig = hdl::Signal("test_signal", hdl::SignalType::local, hdl::SignalImpl::wire, hdl::SignalValue(8, hdl::TriState::X));
+  sig.setAsUInt(0b11100000);
+  BOOST_TEST_REQUIRE( sig.getBitsMSB(0, 4) == hdl::SignalValue({hdl::TriState::H, hdl::TriState::H, hdl::TriState::H, hdl::TriState::L}) );
+}
+
+BOOST_AUTO_TEST_CASE( tc_sig_getBitsMSB_long_msb_1 )
+{
+  hdl::Signal sig = hdl::Signal("test_signal", hdl::SignalType::local, hdl::SignalImpl::wire, hdl::SignalValue(8, hdl::TriState::X));
+  sig.setAsUInt(0b00011010);
+  BOOST_TEST_REQUIRE( sig.getBitsMSB(3, 7) == hdl::SignalValue({hdl::TriState::H, hdl::TriState::H, hdl::TriState::L, hdl::TriState::H}) );
+}
+BOOST_AUTO_TEST_CASE( tc_sig_getBitsMSB_long_msb_2 )
+{
+  hdl::Signal sig = hdl::Signal("test_signal", hdl::SignalType::local, hdl::SignalImpl::wire, hdl::SignalValue(8, hdl::TriState::X));
+  sig.setAsUInt(0b10110110);
+  BOOST_TEST_REQUIRE( sig.getBitsMSB(4, 8) == hdl::SignalValue({hdl::TriState::L, hdl::TriState::H, hdl::TriState::H, hdl::TriState::L}) );
+}
+
+BOOST_AUTO_TEST_SUITE_END()
