@@ -66,16 +66,32 @@ class Signal
         {
             std::cout<<"Signal "<<name<<" created: "<<value.size()<<"bits = "<<value<<std::endl;
         }
-        SignalValue getBits(size_t start, size_t end)
+        // getBits(0, 1) Will return the Least Significant Bit
+        SignalValue getBitsLSB(size_t start, size_t end)
         {
             SignalValue output;
             if (start > end || end > value.size()) {
-                std::cout<<"Signal::getBits: Error: Invalid range "<<start<<" to "<<end<<" for signal "<<name<<" (size="<<value.size()<<")"<<std::endl;
+                std::cout<<"Signal::getBitsLSB: Error: Invalid range "<<start<<" to "<<end<<" for signal "<<name<<" (size="<<value.size()<<")"<<std::endl;
                 return value;
             }
 
             for (size_t i = value.size()-start; i-- > value.size()-end; ) {
                 output.push_front(value[i]);
+            }
+
+            return output;
+        }
+        // getBits(0, 1) Will return the Most Significant Bit
+        SignalValue getBitsMSB(size_t start, size_t end)
+        {
+            SignalValue output;
+            if (start > end || end > value.size()) {
+                std::cout<<"Signal::getBitsMSB: Error: Invalid range "<<start<<" to "<<end<<" for signal "<<name<<" (size="<<value.size()<<")"<<std::endl;
+                return value;
+            }
+
+            for (size_t i = start; i < end; i++) {
+                output.push_back(value[i]);
             }
 
             return output;
