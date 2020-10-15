@@ -6,11 +6,21 @@
 
 BOOST_AUTO_TEST_SUITE( ts_vhdletor_signal )
 
+// Test the convertion from uint to hdl::Signal and back (4 bits, not symetric))
 BOOST_AUTO_TEST_CASE( tc_sig_uint_conv )
 {
   hdl::Signal sig = hdl::Signal("test_signal", hdl::SignalType::local, hdl::SignalImpl::wire, hdl::SignalValue(4, hdl::TriState::X));
   sig.setAsUInt(0b1011);
   BOOST_TEST_REQUIRE( sig.toUInt() == 0b1011 );
+}
+
+BOOST_AUTO_TEST_CASE( tc_sig_xor )
+{
+  hdl::SignalValue r = hdl::SignalValue(5, hdl::TriState::X);
+  hdl::SignalValue a = hdl::SignalValue({hdl::TriState::H, hdl::TriState::L, hdl::TriState::H, hdl::TriState::L, hdl::TriState::L});
+  hdl::SignalValue b = hdl::SignalValue({hdl::TriState::H, hdl::TriState::H, hdl::TriState::L, hdl::TriState::L, hdl::TriState::L});
+  r = hdl::sig_xor(a, b);
+  BOOST_TEST_REQUIRE( r == hdl::SignalValue({hdl::TriState::L, hdl::TriState::H, hdl::TriState::H, hdl::TriState::L, hdl::TriState::L}) );
 }
 
 BOOST_AUTO_TEST_SUITE_END()
