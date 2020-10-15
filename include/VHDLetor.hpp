@@ -73,9 +73,11 @@ class Signal
                 std::cout<<"Signal::getBits: Error: Invalid range "<<start<<" to "<<end<<" for signal "<<name<<" (size="<<value.size()<<")"<<std::endl;
                 return value;
             }
-            
-            for (size_t i = start; i < end; i++)
-                output.push_back(value[i]);// TODO: Do not use [] operator
+
+            for (size_t i = value.size()-start; i-- > value.size()-end; ) {
+                output.push_back(value[i]);
+            }
+
             std::cout<<"getBit "<<start<<":"<<end<<" of "<<value<<" = "<<output<<std::endl;
             return output;
         }
