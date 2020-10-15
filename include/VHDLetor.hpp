@@ -105,11 +105,12 @@ class Signal
                 return 0;
             }
             unsigned int sum = 0;
+            unsigned int top = 0b1 << (value.size()-1);
             size_t i = 0;
             for (const TriState &val : value) {
                 switch (val) {
                     case TriState::H:
-                        sum += 0b1 << i;
+                        sum += top >> i;
                         break;
                     case TriState::L:
                         break;
