@@ -12,7 +12,7 @@ generate:
 	g++ -Wall -g main.cpp -o test
 
 test:
-	g++ -Wall -g ../unittest.cpp -o test
+	g++ -Wall -DUNIT -g ../UnitTest.cpp -o test
 
 clean:
 	rm -f work-*.cf output.vcd
