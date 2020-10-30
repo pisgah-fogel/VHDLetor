@@ -1,8 +1,8 @@
 #pragma once
 
 /**
- * @file half_adder.hpp
- * This file is the cycle accurate equivalent to half_adder.vhd
+ * @file ripple_carry_adder.hpp
+ * This file is the cycle accurate equivalent to ripple_carry_adder.vhd
  */
 
 #include <iostream>
@@ -68,17 +68,20 @@ class ripple_carry_adder : public hdl::VHDLComponent
         }
         void eval_concurrent()  {
             // Concurrent code below:
-            signals[w_carry].value[0] = hdl::TriState::L;
+            signals[w_carry].value[4] = hdl::TriState::L;
 
             for (size_t ii = 0; ii<COMPONENTS_NUMBER; ii++) {
-                childs[ii]->setSignal("i_a",signals[i_add_term1].getBitsMSB(ii, ii+1));
-                childs[ii]->setSignal("i_b",signals[i_add_term2].getBitsMSB(ii, ii+1));
-                childs[ii]->setSignal("i_carry",signals[w_carry].getBitsMSB(ii, ii+1));
-                signals[w_sum].value[ii] = childs[ii]->getSignal("o_sum")->value[0]; // Can also use .getBits(0, 1)
-                signals[w_carry].value[ii+1] = childs[ii]->getSignal("o_carry")->value[0];
+                childs[ii]->setSignal("i_a",signals[i_add_term1].getBitsLSB(ii, ii+1));
+                childs[ii]->setSignal("i_b",signals[i_add_term2].getBitsLSB(ii, ii+1));
+                childs[ii]->setSignal("i_carry",signals[w_carry].getBitsLSB(ii, ii+1));
+                signals[w_sum].value[3-ii] = childs[ii]->getSignal("o_sum")->value[0]; // Can also use .getBitsLSB(0, 1)
+                signals[w_carry].value[4-ii-1] = childs[ii]->getSignal("o_carry")->value[0];
+		std::cout<<"Child "<<ii<<" "<<*childs[ii]->getSignal("i_a")<<" "<<*childs[ii]->getSignal("i_b")<<" "<<*childs[ii]->getSignal("i_carry")<<" "<<*childs[ii]->getSignal("o_sum")<<" "<<*childs[ii]->getSignal("o_carry")<<std::endl;
+		std::cout<<signals[w_carry]<<std::endl;
+		std::cout<<signals[w_sum]<<std::endl;
             }
 
-            signals[o_result].value = hdl::sig_concatenate(signals[w_carry].getBitsMSB(4, 5), signals[w_sum].value);
+            signals[o_result].value = hdl::sig_concatenate(signals[w_carry].getBitsMSB(0, 1), signals[w_sum].value);
             // End of concurrent code
         }
 };
