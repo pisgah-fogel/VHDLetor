@@ -2,6 +2,7 @@
 import sys
 from shutil import copyfile
 import os
+from parsed_file import ParsedFile
 
 WorkingDirectory = "./"
 VHDLetorDirectory = "../"
@@ -17,7 +18,14 @@ def parse_file(filename):
         print("Error: Input file ", filename, " is not VHDL (.vhd)")
         exit(1)
 
-    copyfile(VHDLetorDirectory+ExampleHppFile, OutputDirectory+component_name+".hpp")
+    hppFilename = OutputDirectory+component_name+".hpp"
+    copyfile(VHDLetorDirectory+ExampleHppFile, hppFilename)
+
+    file = ParsedFile()
+    file.init()
+    file.setHppFile(hppFilename)
+    file.setVHDLFile(filename)
+    file.parse()
 
 files_to_parse = []
 count = 0
