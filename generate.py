@@ -10,19 +10,23 @@ ExampleHppFile = "example.hpp"
 OutputDirectory = WorkingDirectory+"generated/"
 
 def parse_file(filename):
+    file = ParsedFile()
+    file.init()
     base=os.path.basename(filename)
     component_name = os.path.splitext(base)[0] # [1] = .vhd
 
-    if os.path.splitext(base)[1] != ".vhd":
+    if os.path.splitext(base)[1] == ".vhd":
+        file.setLangage("VHDL")
+    if os.path.splitext(base)[1] == ".v":
+        file.setLangage("Verilog")
+    else:
         print(os.path.splitext(base)[1])
-        print("Error: Input file ", filename, " is not VHDL (.vhd)")
+        print("Error: Input file ", filename, " is not VHDL (.vhd) nor Verilog (.v)")
         exit(1)
 
     hppFilename = OutputDirectory+component_name+".hpp"
     copyfile(VHDLetorDirectory+ExampleHppFile, hppFilename)
 
-    file = ParsedFile()
-    file.init()
     file.setHppFile(hppFilename)
     file.setVHDLFile(filename)
     file.parse()
