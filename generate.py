@@ -14,14 +14,14 @@ def parse_file(filename):
     file.init()
     base=os.path.basename(filename)
     component_name = os.path.splitext(base)[0] # [1] = .vhd
+    extension = os.path.splitext(base)[1]
 
-    if os.path.splitext(base)[1] == ".vhd":
+    if extension == ".vhd":
         file.setLangage("VHDL")
-    if os.path.splitext(base)[1] == ".v":
+    elif extension == ".v":
         file.setLangage("Verilog")
     else:
-        print(os.path.splitext(base)[1])
-        print("Error: Input file ", filename, " is not VHDL (.vhd) nor Verilog (.v)")
+        print("Error: Input file ", filename, " is not VHDL (.vhd) nor Verilog (.v), extension is \"", extension, "\"")
         exit(1)
 
     hppFilename = OutputDirectory+component_name+".hpp"
