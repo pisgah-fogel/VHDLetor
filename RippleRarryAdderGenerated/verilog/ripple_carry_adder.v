@@ -1,12 +1,12 @@
 `include "full_adder.v"
  
 module ripple_carry_adder 
-  #(parameter WIDTH)
   (
     input [WIDTH-1:0] i_add_term1,
     input [WIDTH-1:0] i_add_term2,
     output [WIDTH:0]  o_result
     );
+  parameter WIDTH = 2;
 
   wire [WIDTH:0]     w_CARRY;
   wire [WIDTH-1:0]   w_SUM;

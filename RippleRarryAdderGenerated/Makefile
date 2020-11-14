@@ -5,6 +5,10 @@ ghdl:
 	ghdl -e ripple_carry_adder_tb
 	ghdl -r ripple_carry_adder_tb --vcd=output.vcd
 
+iverilog:
+	iverilog -o test -I verilog/ verilog/ripple_carry_adder_tb.v
+	vvp test
+
 cpp: generate unit
 	g++ -Wall -g main.cpp -o test
 

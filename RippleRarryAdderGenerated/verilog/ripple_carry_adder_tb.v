@@ -17,6 +17,11 @@ module ripple_carry_adder_tb ();
 
     initial
     begin
+
+        $dumpfile("output.vcd");
+        $dumpvars; 
+        $dumpon;
+        $display("Start of the testcase");
         #10;
         r_ADD_1 = 2'b00;
         r_ADD_2 = 2'b01;
@@ -30,6 +35,9 @@ module ripple_carry_adder_tb ();
         r_ADD_1 = 2'b11;
         r_ADD_2 = 2'b11;
         #10;
+        $display("End of the testcase");
+        $finish;
+        $dumpoff;
     end
  
 endmodule
