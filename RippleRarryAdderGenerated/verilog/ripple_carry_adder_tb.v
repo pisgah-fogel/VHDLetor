@@ -2,7 +2,7 @@
  
 module ripple_carry_adder_tb ();
  
-    parameter WIDTH = 2;
+    parameter WIDTH = 4;
 
     reg [WIDTH-1:0] r_ADD_1 = 0;
     reg [WIDTH-1:0] r_ADD_2 = 0;
@@ -23,17 +23,17 @@ module ripple_carry_adder_tb ();
         $dumpon;
         $display("Start of the testcase");
         #10;
-        r_ADD_1 = 2'b00;
-        r_ADD_2 = 2'b01;
+        r_ADD_1 = 4'b0000;
+        r_ADD_2 = 4'b0100;
         #10;
-        r_ADD_1 = 2'b10;
-        r_ADD_2 = 2'b01;
+        r_ADD_1 = 4'b1000;
+        r_ADD_2 = 4'b0100;
         #10;
-        r_ADD_1 = 2'b01;
-        r_ADD_2 = 2'b11;
+        r_ADD_1 = 4'b0100;
+        r_ADD_2 = 4'b1100;
         #10;
-        r_ADD_1 = 2'b11;
-        r_ADD_2 = 2'b11;
+        r_ADD_1 = 4'b1100;
+        r_ADD_2 = 4'b1100;
         #10;
         $display("End of the testcase");
         $finish;

@@ -2,9 +2,9 @@
  
 module ripple_carry_adder 
   (
-    input [WIDTH-1:0] i_add_term1,
-    input [WIDTH-1:0] i_add_term2,
-    output [WIDTH:0]  o_result
+    input wire [WIDTH-1:0] i_add_term1,
+    input wire [WIDTH-1:0] i_add_term2,
+    output wire [WIDTH:0]  o_result
     );
   parameter WIDTH = 2;
 
