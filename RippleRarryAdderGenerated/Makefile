@@ -1,7 +1,7 @@
 all: cpp unit
 
 ghdl:
-	ghdl -a *.vhd
+	ghdl -a vhdl/*.vhd
 	ghdl -e ripple_carry_adder_tb
 	ghdl -r ripple_carry_adder_tb --vcd=output.vcd
 
@@ -13,7 +13,7 @@ unit:
 
 generate:
 	mkdir -p generated 
-	python3 ../generate.py ripple_carry_adder.vhd full_adder.vhd
+	python3 ../generate.py vhdl/ripple_carry_adder.vhd vhdl/full_adder.vhd
 
 clean:
 	rm -f work-*.cf output.vcd
