@@ -17,7 +17,7 @@ unit:
 
 generate:
 	mkdir -p generated 
-	python3 ../generate.py vhdl/ripple_carry_adder.vhd vhdl/full_adder.vhd
+	python3 ../generate.py verilog/ripple_carry_adder.v verilog/full_adder.v
 
 clean:
 	rm -f work-*.cf output.vcd
