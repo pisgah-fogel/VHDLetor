@@ -1,4 +1,4 @@
-module full_adder 
+module full_adder
 (
     input wire i_bit1,
     input wire i_bit2,

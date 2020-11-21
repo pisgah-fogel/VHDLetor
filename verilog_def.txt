@@ -1,0 +1,170 @@
+// Handles "`timescale 1ns/10ps" or "`include "<name>.v""
+optionalRepeat { // Optional
+    expect("`")
+    enterContext("macro")
+    switch {
+        case "timescale" {
+            expect(" ")
+            ignore(" ")
+            readTime()
+            ignore(" ")
+            expect("/")
+            ignore(" ")
+            readFilename()
+            ignoreIfComment()
+            expect("\n")
+        }
+        case "include" {
+            expect(" ")
+            ignore(" ")
+            expect("\"")
+            readFilename()
+            expect("\"")
+        }
+    }
+    exitContext("macro")
+}
+
+optionalRepeat {
+    optionalCommentsWherever()
+    expect("module")
+    enterContext("module")
+    expect(" ")ignore(" ")
+    readName()
+    ignore(" ", "\n")
+    expect("(")
+    optionalRepeat { // Input/Output
+        optionalCommentsWherever()
+        ignore(" ")
+        expect("input", "output")
+        enterContext("signalDecl")
+        expect(" ")ignore(" ")
+        expect("wire", "reg")
+        expect(" ")ignore(" ")
+        readName()
+        exitContext("signalDecl")
+        expect(",") // TODO: Do not expect if last element
+    }
+    expect(");")
+
+    // Parameters
+    optionalRepeatWherever {
+        ignore(" ")
+        expect("parameter")
+        ignore(" ")
+        optional { // Vectors
+            readArray() // Read [Expr:Expr] and check boundaries
+            ignore(" ")
+        }
+        expect(" ")
+        readName()
+        optional { // Array
+            readArray()
+        }
+        optional { // Array
+            readArray()
+        }
+        expect("=") // Parameters needs default value
+        readExpr() // Read any expression
+        expect(";")
+    }
+
+    // Local Registers
+    optionalRepeatWherever {
+        ignore(" ")
+        expect("reg")
+        ignore(" ")
+        optional { // Vectors
+            readArray() // Read [Expr:Expr] and check boundaries
+            ignore(" ")
+        }
+        expect(" ")
+        readName()
+        optional { // Array
+            readArray()
+        }
+        optional { // Array
+            readArray()
+        }
+
+        optionalWithWarning { // Default register's value is good pratice for FPGA
+            expect("=") // Parameters needs default value
+            readExpr() // Read any expression
+            expect(";")
+        }
+    }
+
+    // Local Wires
+    optionalRepeatWherever {
+        ignore(" ")
+        expect("wire")
+        ignore(" ")
+        optional { // Vectors
+            readArray() // Read [Expr:Expr] and check boundaries
+            ignore(" ")
+        }
+        expect(" ")
+        readName()
+        optional { // Array
+            readArray()
+        }
+        optional { // Array
+            readArray()
+        }
+
+        optional {
+            ignore(" ")
+            expect("=") // Parameters needs default value
+            error() // Wires cannot be initialized
+        }
+    }
+
+    // assign
+    optionalRepeatWherever {
+        ignore(" ")
+        expect("assign")
+        expect(" ")ignore(" ")
+        readName()
+        ignore(" ")
+        readIndexOrArrayRange()
+        expect("=")
+        ignore(" ")
+        readExpr()
+        expect(";")
+    }
+
+    // always @ (posedge i_clk or posedge i_rst)
+    optionalRepeatWherever {
+        expect("always")
+        ignore(" ")
+        expect("@")
+        expect("(")
+        ignore(" ")
+        readBlockSensivity()
+        ignore(" ")
+        expect(")")
+        // Multi line with begin...end or single line
+        optional {
+            expect("begin")
+            optionalRepeat{
+                optionalCommentsWherever()
+                readLineInBlock()
+            }
+            expect("end")
+        } else {
+            readLineInBlock()
+        }
+    }
+
+// TODO: Genvar et generate
+
+    expect("endmodule")
+    exitContext("module")
+}
+
+optionalCommentsWherever()
+
+
+/////////////////// readLineInBlock ////////////////////
+
+// Can be if else casez 
