@@ -167,4 +167,77 @@ optionalCommentsWherever()
 
 /////////////////// readLineInBlock ////////////////////
 
-// Can be if else casez 
+// Can be if else casez
+
+/*
+`ifndef
+`elif
+`line
+** // Power operator
+always
+and
+assign
+automatic
+begin
+case
+casex
+casez
+constant function
+deassign
+default
+defparam
+design
+disable
+edge
+else
+end
+endcase
+endconfig
+endfunction
+endgenerate
+endmodule
+endprimitive
+endspecify
+endtable
+endtask
+event
+for
+force
+forever
+fork
+function
+generate
+genvar
+include
+initial
+inout
+input
+integer
+join
+localparam
+module
+nand
+negedge
+nmos
+nor
+not
+or
+output
+parameter
+pmos
+posedge
+primitive
+specify
+specparam
+signed
+task
+time
+timescale
+real
+realtime
+reg
+unsigned
+wait
+while
+wire
+*/
