@@ -105,7 +105,14 @@ void FileHandler::skipComments()
     // Skip comments like "// ... \n"
     if (line[index] == '/' && line[index+1] == '/') {
         printf("Debug: Skip // comment, line %ld\n", line_count);
-        fillBuffer();
+        //fillBuffer();
+        while(line[index] == '\n') {
+            if (!moveForward(1)) {
+                puts("Debug: The file ends with a comment: \"//\"\n");
+                return;
+            }
+        }
+        moveForward(1);
     }
 
     //while(line[index] != '/n' || line[index] != '/0') index++;
@@ -120,7 +127,7 @@ void FileHandler::skipComments()
                 // TODO: Raise error
             }
         }
-        printf("Debug: End /* comment, line %ld\n", line_count);
+        printf("Debug: End */ comment, line %ld\n", line_count);
     }
 }
 
@@ -189,6 +196,10 @@ FileHandler::~FileHandler()
 
 int main(int argc, char** argv)
 {
+    if (argc != 2) {
+        puts("[x] Usage: ./program_name file_to_parse");
+        exit(1);
+    }
     FileHandler file(argv[1]);
     file.parseFile();
     return 0;
