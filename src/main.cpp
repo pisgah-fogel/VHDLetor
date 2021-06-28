@@ -120,26 +120,26 @@ Signal FileHandler::readSignal()
 
 	std::string entry_1;
 	skipAllCommentsAndSpaces();
-	readName(entry_1);
+	readName(&entry_1);
 	if (entry_1 == "input") {
-		output.type = SignalType.Input;
+		output.type = SignalType::Input;
 		countSpaces();
-		readName(entry_1);
+		readName(&entry_1);
 	}
 	else if (entry_1 == "output") {
-		output.type = SignalType.Output;
+		output.type = SignalType::Output;
 		countSpaces();
-		readName(entry_1);
+		readName(&entry_1);
 	}
 	else {
-		output.type = SignalType.Internal;
+		output.type = SignalType::Internal;
 	}
 
 	if (entry_1 == "wire") {
-		output.nature = SignalNature.Wire;
+		output.nature = SignalNature::Wire;
 	}
 	else if (entry_1 == "reg") {
-		output.nature = SignalNature.Reg;
+		output.nature = SignalNature::Reg;
 	} else {
 		printf("Error: Signal type: %s unexpected, should be wire/reg\n", entry_1.c_str());
 	}
@@ -172,7 +172,7 @@ Signal FileHandler::readSignal()
 		output.size_2 = 0;
 	}
 
-	readName(output.name);
+	readName(&output.name);
 	countSpaces();
 	if (!expect(";")) {
 		puts("Error: ';' expected after signal declaration\n");
@@ -186,7 +186,7 @@ Signal FileHandler::readSignal()
  *
  * @args ptr pointer to the integer to be overwritten
  */
-void readInteger(long int* ptr)
+void FileHandler::readInteger(long int* ptr)
 {
 	std::string buffer;
 	*ptr = 0;
