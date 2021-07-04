@@ -1,17 +1,11 @@
 module full_adder 
 (
-	i_bit1,
-	i_bit2,
-	i_carry,
-	o_sum,
-	o_carry
+	input wire i_bit1,
+	input wire i_bit2,
+	input wire i_carry,
+	output wire o_sum,
+	output wire o_carry
 	);
-	input  i_bit1;
-	input  i_bit2;
-	input  i_carry;
-	output o_sum;
-	output o_carry;
-
 	wire   w_WIRE_1;
 	wire   w_WIRE_2;
 	wire   w_WIRE_3;
