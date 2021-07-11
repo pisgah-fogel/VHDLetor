@@ -120,7 +120,7 @@ void FileHandler::parseVerilog()
 				skipAllCommentsAndSpaces();
 
 				if (old_index == char_count + index) {
-					printf("Error: Unexpected expression at line %d\n",
+					printf("Error: Unexpected expression at line %ld\n",
 					       line_count);
 					fputs("Buffer: \"", stdout);
 					fputs(line + index, stdout);
@@ -132,7 +132,7 @@ void FileHandler::parseVerilog()
 
 			// Here we expect endmodule
 			if (!expect("endmodule")) {
-				printf("Error: \"endmodule\" expected at line %d\n",
+					printf("Error: \"endmodule\" expected at line %ld\n",
 				       line_count);
 			}
 			skipAllCommentsAndSpaces();
@@ -167,7 +167,7 @@ void print_signal(Signal *sig)
 	default:
 		fputs("UNK_NAT ", stdout);
 	}
-	printf("[%d:%d] ", sig->size_1, sig->size_2);
+	printf("[%ld:%ld] ", sig->size_1, sig->size_2);
 	fputs(sig->name.c_str(), stdout);
 	fputs("\n", stdout);
 }
@@ -181,7 +181,7 @@ Signal FileHandler::readSignal(bool isInOut)
 	readName(&entry_1);
 	if (entry_1 == "input") {
 		if (!isInOut) {
-			printf("Error: Input/Output declaration is not allowed in line %d\n",
+			printf("Error: Input/Output declaration is not allowed in line %ld\n",
 			       line_count);
 			// TODO return an error
 			return output;
@@ -191,7 +191,7 @@ Signal FileHandler::readSignal(bool isInOut)
 		readName(&entry_1);
 	} else if (entry_1 == "output") {
 		if (!isInOut) {
-			printf("Error: Input/Output declaration is not allowed in line %d\n",
+			printf("Error: Input/Output declaration is not allowed in line %ld\n",
 			       line_count);
 			// TODO return an error
 			return output;
@@ -201,7 +201,7 @@ Signal FileHandler::readSignal(bool isInOut)
 		readName(&entry_1);
 	} else {
 		if (isInOut) {
-			printf("Error: Input/Output is expected in line %d, not an internal "
+			printf("Error: Input/Output is expected in line %ld, not an internal "
 			       "signal\n",
 			       line_count);
 			puts("Note: inout is not supported yet");
@@ -255,7 +255,7 @@ Signal FileHandler::readSignal(bool isInOut)
 
 	if (!isInOut) {
 		if (!expect(";")) {
-			printf("Error: Expecting a ';' line %d\n", line_count);
+			printf("Error: Expecting a ';' line %ld\n", line_count);
 			// TODO return an error
 			return output;
 		}
